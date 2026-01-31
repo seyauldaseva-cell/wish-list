@@ -5,16 +5,262 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Вишлист</title>
   <style>
-    body{font-family:system-ui;background:#fafafa;margin:0;padding:24px}
-    .box{max-width:720px;margin:0 auto;background:#fff;border:1px solid #eee;border-radius:16px;padding:18px}
-    a{color:#111}
+    body{
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:#fafafa;
+      margin:0;
+      color:#111;
+    }
+    header{
+      max-width:1000px;
+      margin:0 auto;
+      padding:22px 16px 10px;
+    }
+    h1{ margin:0 0 8px; }
+    .sub{
+      color:#666;
+      margin:0 0 14px;
+      line-height:1.35;
+    }
+    .bar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    input{
+      flex:1;
+      min-width:240px;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid #e5e5e5;
+      background:#fff;
+      font-size:16px;
+    }
+    .pill{
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid #e5e5e5;
+      background:#fff;
+      font-size:14px;
+      color:#111;
+      white-space:nowrap;
+    }
+    main{
+      max-width:1000px;
+      margin:0 auto;
+      padding:0 16px 26px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:12px;
+    }
+    .card{
+      background:#fff;
+      border:1px solid #eee;
+      border-radius:16px;
+      padding:14px;
+      overflow:hidden;
+    }
+    .img{
+      width:100%;
+      height:180px;
+      object-fit:cover;
+      border-radius:12px;
+      margin-bottom:10px;
+      background:#f2f2f2;
+    }
+    .row{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
+      margin-bottom:8px;
+    }
+    .title{
+      font-weight:800;
+      margin:0;
+      line-height:1.2;
+    }
+    .meta{
+      color:#666;
+      font-size:14px;
+      margin:0 0 10px;
+    }
+    .desc{
+      font-size:14px;
+      color:#444;
+      margin:6px 0 12px;
+      line-height:1.45;
+    }
+    .badge{
+      font-size:12px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid;
+      white-space:nowrap;
+      margin-top:2px;
+    }
+    .free{
+      background:#eafff2;
+      border-color:#b7f5cf;
+      color:#067647;
+    }
+    .taken{
+      background:#ffecec;
+      border-color:#ffc7c7;
+      color:#b42318;
+    }
+    .btns{
+      display:flex;
+      gap:10px;
+    }
+    a.btn, button.btn{
+      flex:1;
+      border-radius:12px;
+      padding:10px 12px;
+      border:1px solid #ddd;
+      background:#fff;
+      cursor:pointer;
+      text-decoration:none;
+      color:#111;
+      font-size:15px;
+    }
+    a.btn.primary{
+      background:#111;
+      color:#fff;
+      border-color:#111;
+    }
+    button.btn:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+    }
+    footer{
+      max-width:1000px;
+      margin:0 auto;
+      padding:0 16px 24px;
+      color:#777;
+      font-size:13px;
+      line-height:1.4;
+    }
   </style>
 </head>
+
 <body>
-  <div class="box">
+  <header>
     <h1>🎁 Мой вишлист</h1>
-    <p>Если ты это видишь — сайт уже работает. Дальше добавим категории и бронь 😄</p>
-    <p><a href="https://example.com" target="_blank">Пример ссылки на подарок</a></p>
-  </div>
+    <p class="sub">
+      Выбирай любой подарок. Если карточка отмечена как “Занято” — значит уже кто-то забронировал.
+      <br>Пока бронь работает в демо-режиме (на этом устройстве). Дальше подключим настоящую анонимную бронь.
+    </p>
+
+    <div class="bar">
+      <input id="q" type="search" placeholder="Поиск по названию… (например: книга / серьги / цветы)" />
+      <span class="pill" id="count">0 позиций</span>
+    </div>
+  </header>
+
+  <main>
+    <div class="grid" id="list"></div>
+  </main>
+
+  <footer>
+    Если ссылка “Купить” не открывается — значит магазин капризничает, а не ты 😄
+  </footer>
+
+<script>
+  // =========================
+  // 1) ТВОЙ СПИСОК ПОДАРКОВ
+  //    Редактируй только здесь
+  // =========================
+  const items = [
+    {
+      id: 1,
+      title: "Букет цветов",
+      price: "~300 000 сум",
+      img: "https://images.unsplash.com/photo-1526045478516-99145907023c?auto=format&fit=crop&w=1200&q=80",
+      desc: "Нежный букет (пионы/тюльпаны/розы — что найдёшь красивое 💐).",
+      buy: "https://example.com",
+      status: "free"
+    },
+    {
+      id: 2,
+      title: "Аксессуар (серьги / браслет)",
+      price: "~800 000 сум",
+      img: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=1200&q=80",
+      desc: "Минималистично и аккуратно. Серебро или золото — оба варианта ок ✨",
+      buy: "https://example.com",
+      status: "free"
+    },
+    {
+      id: 3,
+      title: "Книга — Агата Кристи (любое издание)",
+      price: "~90 000 сум",
+      img: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1200&q=80",
+      desc: "Главное — хорошее состояние и чтобы читалось приятно 📚",
+      buy: "https://example.com",
+      status: "free"
+    }
+  ];
+
+  // =========================
+  // 2) РЕНДЕР + ПОИСК
+  // =========================
+  const list = document.getElementById('list');
+  const q = document.getElementById('q');
+  const count = document.getElementById('count');
+
+  function badge(status){
+    return status === "taken"
+      ? `<span class="badge taken">Занято</span>`
+      : `<span class="badge free">Свободно</span>`;
+  }
+
+  function cardHTML(x){
+    const disabled = x.status === "taken" ? "disabled" : "";
+    const safeImg = x.img || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=80";
+
+    return `
+      <div class="card" data-title="${(x.title||"").toLowerCase()}">
+        <img class="img" src="${safeImg}" alt="${x.title || "подарок"}" loading="lazy" />
+        <div class="row">
+          <p class="title">${x.title || ""}</p>
+          ${badge(x.status)}
+        </div>
+        <p class="meta">${x.price || ""}</p>
+        <p class="desc">${x.desc || ""}</p>
+        <div class="btns">
+          <a class="btn primary" href="${x.buy || "#"}" target="_blank" rel="noopener">Купить</a>
+          <button class="btn" ${disabled} onclick="demoReserve(${x.id})">Забронировать</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function render(){
+    const term = (q.value || "").trim().toLowerCase();
+    const filtered = items.filter(x => (x.title||"").toLowerCase().includes(term));
+    list.innerHTML = filtered.map(cardHTML).join("");
+    count.textContent = `${filtered.length} позиций`;
+  }
+
+  q.addEventListener('input', render);
+
+  // =========================
+  // 3) ДЕМО-БРОНЬ
+  // (не сохраняется между устройствами/обновлениями)
+  // =========================
+  function demoReserve(id){
+    const it = items.find(x => x.id === id);
+    if(!it || it.status === "taken") return;
+    it.status = "taken";
+    render();
+    alert("✅ Забронировано (демо). Если хочешь — подключим настоящую анонимную бронь, чтобы всем было видно онлайн.");
+  }
+
+  render();
+</script>
+
 </body>
 </html>
